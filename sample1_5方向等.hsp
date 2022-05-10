@@ -1,0 +1,233 @@
+;	sample.hsp
+
+;address = "127.0.0.1"				;IPアドレス
+address = "192.168.1.226"				;IPアドレス
+port = 2009							;ポート番号の設定
+socknum = 0							;ソケットID番号
+teamname = "Cool"					;チーム名
+Dir = 0;
+
+#include "hspsock.as"
+#include "root/Connect.hsp"
+#include "root/method.hsp"
+#include "root/connectwindow.hsp"
+#include "root/playwindow.hsp"
+
+#module
+ 
+	#defcfunc checkF
+		logmes  str(Dir)+"  checkF"
+		switch Dir
+			case 0 
+				return value@.2
+				swbreak
+			case 1 
+				return value@.6
+				swbreak
+			case 2 
+				return value@.8
+				swbreak
+			case 3 
+				return value@.4
+				swbreak	
+			default 
+				return -1
+				swbreak
+		swend
+
+	
+	#defcfunc checkR
+	logmes  str(Dir)+"  checkR"
+		switch Dir
+			case 0 
+				return value@.6
+				swbreak
+			case 1 
+				return value@.8
+				swbreak
+			case 2 
+				return value@.4
+				swbreak
+			case 3 
+				return value@.2
+				swbreak	
+			default 
+				return -1
+				swbreak
+		swend
+
+	
+	#defcfunc checkB
+		logmes  str(Dir)+"  checkB"
+		switch Dir
+			case 0 
+				return value@.8
+				swbreak
+			case 1 
+				return value@.4
+				swbreak
+			case 2 
+				return value@.2
+				swbreak
+			case 3 
+				return value@.6
+				swbreak	
+			default 
+				return -1
+				swbreak
+		swend
+
+		return
+	
+	#defcfunc checkL
+		logmes  str(Dir)+"  checkL"
+		switch Dir
+			case 0 
+				return value@.4
+				swbreak
+			case 1 
+				return value@.2
+				swbreak
+			case 2 
+				return value@.6
+				swbreak
+			case 3 
+				return value@.8
+				swbreak	
+			default 
+				return -1
+				swbreak
+		swend
+
+		return
+	
+
+	#deffunc moveF
+		switch Dir
+			case 0 
+				walkUp
+				swbreak
+			case 1 
+				walkRight
+				swbreak
+			case 2 
+				walkDown
+				swbreak
+			case 3 
+				walkLeft
+				swbreak	
+			default 
+				
+				swbreak
+		swend
+
+		return
+
+	#deffunc moveR
+		switch Dir
+			case 0 
+				walkRight:Dir = 1
+				swbreak
+			case 1 
+				walkDown:Dir = 2
+				swbreak
+			case 2 
+				walkLeft:Dir = 3
+				swbreak
+			case 3 
+				walkUp:Dir = 0
+				swbreak	
+			default 
+				
+				swbreak
+		swend
+
+		return
+
+	#deffunc moveB
+		switch Dir
+			case 0 
+				walkDown:Dir = 2
+				swbreak
+			case 1 
+				walkLeft:Dir = 3
+				swbreak
+			case 2 
+				walkUp:Dir = 0
+				swbreak
+			case 3 
+				walkRight:Dir = 1
+				swbreak	
+			default 
+				
+				swbreak
+		swend
+
+		return
+
+	#deffunc moveL
+		switch Dir
+			case 0 
+				walkDown:Dir = 2
+				swbreak
+			case 1 
+				walkLeft:Dir = 3
+				swbreak
+			case 2 
+				walkUp:Dir = 0
+				swbreak
+			case 3 
+				walkRight:Dir = 1
+				swbreak	
+			default 
+				return -1
+				swbreak
+		swend
+
+		return
+
+#global
+
+
+*main
+	Connect						;サーバーに接続します
+
+	checkgame = checkEnd()
+	repeat
+		if system_check == 1 : break 
+		wait 10
+	loop
+	wait 200
+	while (checkgame == 1 )		;ゲームが続いている間回り続ける
+		getReady
+			logmes  str(Dir)
+			dialog str(Dir)
+		;================
+		if checkR() == 0 {
+			ES = str(Dir)
+			logmes  "-111" :logmes  ES
+			moveR
+			logmes  "111"
+		} else {
+			if checkF() == 0 {
+				logmes  "-222"
+				moveF
+				logmes  "222"
+			} else {
+				if checkL() == 0 {
+					logmes  "-333"
+					moveL
+					logmes  "3333"
+				} else {
+					logmes  "-444"
+					moveB
+					logmes  "444"
+				}
+			}
+		}
+		;================
+		
+	wend
+	
+	endGame
+	
